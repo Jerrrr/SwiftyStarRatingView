@@ -181,7 +181,7 @@ fileprivate extension SwiftyStarRatingView {
     
     func customInit() {
         _value = 0
-        spacing = 5.0
+        spacing = 0.0
         continuous = true
         _minimumValue = 0
         _maximumValue = 5
