@@ -1,4 +1,4 @@
-#SwiftyStarRatingView
+<img src="Image/logo.png" width="100%">
 
 
 ####A simple star rating view written in pure swift, lightweight but powerful.
