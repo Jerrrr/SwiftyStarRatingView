@@ -5,8 +5,9 @@
  
 ##Screenshots
 
-<img src="Image/" width="50%">
-
+<img src="Image/1.gif" width="30%">
+<img src="Image/2.gif" width="30%">
+<img src="Image/3.gif" width="30%">
 
 ## Requirements
 
