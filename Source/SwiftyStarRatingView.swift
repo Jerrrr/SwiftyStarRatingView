@@ -12,7 +12,8 @@ typealias SSRVShouldBeginGesRecBlock = (_ gesture:UIGestureRecognizer) -> Bool
 
 @IBDesignable
 class SwiftyStarRatingView: UIControl {
-
+    
+    /// default is 5
     @IBInspectable public var maximumValue: CGFloat {
         set{
             if _maximumValue != newValue {
@@ -119,25 +120,16 @@ class SwiftyStarRatingView: UIControl {
             return CGSize(width: _maximumValue * height + (_maximumValue-1) * spacing, height: height)
         }
     }
-//    override var accessibilityLabel: String? {
-//        set{
-//        
-//        }
-//        get{
-//            return super.accessibilityLabel
-//        }
-//    }
-//    override var accessibilityValue: String? {
-//        get{
-//            return self.value.description
-//        }
-//    }
-//    override var accessibilityTraits: UIAccessibilityTraits {
-//        get{
-//            return super.accessibilityTraits|UIAccessibilityTraitAdjustable
-//        }
-//    }
-
+    override var tintColor: UIColor! {
+        set{
+            super.tintColor = newValue
+            setNeedsDisplay()
+        }
+        get{
+            return super.tintColor
+        }
+    }
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.customInit()
