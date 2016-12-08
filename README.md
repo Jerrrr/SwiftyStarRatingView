@@ -86,7 +86,7 @@ Second, install SwiftyStarRatingView into your project:
 
 `SwiftyStarRatingView` also works great with Auto Layout, you can use it in StoryBoard or XIB.
 
-<img src="Image/" width="50%">
+<img src="Image/sx.png">
 
 ## Contacts	
 
