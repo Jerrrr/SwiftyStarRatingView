@@ -13,7 +13,6 @@ typealias SSRVShouldBeginGesRecBlock = (_ gesture:UIGestureRecognizer) -> Bool
 @IBDesignable
 class SwiftyStarRatingView: UIControl {
     
-    /// default is 5
     @IBInspectable public var maximumValue: CGFloat {
         set{
             if _maximumValue != newValue {
