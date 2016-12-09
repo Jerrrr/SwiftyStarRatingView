@@ -97,4 +97,4 @@ Second, install SwiftyStarRatingView into your project:
 
 ## License	
 
-SwiftyStarRatingView is released under the [MIT license](LICENSE). See LICENSE for details.
+SwiftyStarRatingView is released under the [GNU GENERAL PUBLIC LICENSE](LICENSE). See LICENSE for details.
