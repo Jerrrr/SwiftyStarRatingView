@@ -1,8 +1,9 @@
 <img src="Image/logo.png" width="100%">
 
-
 ####A simple star rating view written in pure swift, lightweight but powerful.
- 
+
+######[🇨🇳中文介绍](http://www.jianshu.com/p/28d5f0bac8fd)
+
 ##Screenshots
 
 <img src="Image/1.gif" width="30%">
