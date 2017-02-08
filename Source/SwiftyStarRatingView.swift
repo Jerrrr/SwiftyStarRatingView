@@ -142,7 +142,7 @@ public class SwiftyStarRatingView: UIControl {
     override public func draw(_ rect: CGRect) {
         
         let context = UIGraphicsGetCurrentContext()
-        context?.setFillColor((self.backgroundColor?.cgColor)!)
+        context?.setFillColor((self.backgroundColor?.cgColor ?? UIColor.white.cgColor)!)
         context?.fill(rect)
         
         let availableWidth = rect.width - 2 - (spacing * (_maximumValue - 1))
