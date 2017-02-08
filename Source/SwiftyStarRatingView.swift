@@ -8,10 +8,10 @@
 
 import UIKit
 
-typealias SSRVShouldBeginGesRecBlock = (_ gesture:UIGestureRecognizer) -> Bool
+public typealias SSRVShouldBeginGesRecBlock = (_ gesture:UIGestureRecognizer) -> Bool
 
 @IBDesignable
-class SwiftyStarRatingView: UIControl {
+public class SwiftyStarRatingView: UIControl {
     
     @IBInspectable public var maximumValue: CGFloat {
         set{
@@ -103,23 +103,23 @@ class SwiftyStarRatingView: UIControl {
         }
     }
     
-    override var isEnabled: Bool {
+    override public var isEnabled: Bool {
         willSet{
             updateAppearance(enabled: newValue)
         }
     }
-    override var canBecomeFirstResponder: Bool {
+    override public var canBecomeFirstResponder: Bool {
         get{
             return shouldBecomeFirstResponder
         }
     }
-    override var intrinsicContentSize: CGSize {
+    override public var intrinsicContentSize: CGSize {
         get{
             let height:CGFloat = 44.0
             return CGSize(width: _maximumValue * height + (_maximumValue-1) * spacing, height: height)
         }
     }
-    override var tintColor: UIColor! {
+    override public var tintColor: UIColor! {
         set{
             super.tintColor = newValue
             setNeedsDisplay()
@@ -134,12 +134,12 @@ class SwiftyStarRatingView: UIControl {
         self.customInit()
     }
     
-    required init?(coder aDecoder: NSCoder) {
+    required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         self.customInit()
     }
     
-    override func draw(_ rect: CGRect) {
+    override public func draw(_ rect: CGRect) {
         
         let context = UIGraphicsGetCurrentContext()
         context?.setFillColor((self.backgroundColor?.cgColor)!)
@@ -290,7 +290,7 @@ fileprivate extension SwiftyStarRatingView {
 
 extension SwiftyStarRatingView {
 
-    override func beginTracking(_ touch: UITouch, with event: UIEvent?) -> Bool {
+    override public func beginTracking(_ touch: UITouch, with event: UIEvent?) -> Bool {
         if isEnabled {
             super.beginTracking(touch, with: event)
             if shouldBecomeFirstResponder && !self.isFirstResponder {
@@ -303,7 +303,7 @@ extension SwiftyStarRatingView {
         }
     }
  
-    override func continueTracking(_ touch: UITouch, with event: UIEvent?) -> Bool {
+    override public func continueTracking(_ touch: UITouch, with event: UIEvent?) -> Bool {
         if self.isEnabled {
             super.continueTracking(touch, with: event)
             self.handle(touch: touch)
@@ -313,7 +313,7 @@ extension SwiftyStarRatingView {
         }
     }
     
-    override func endTracking(_ touch: UITouch?, with event: UIEvent?) {
+    override public func endTracking(_ touch: UITouch?, with event: UIEvent?) {
         super.endTracking(touch, with: event)
         if shouldBecomeFirstResponder && self.isFirstResponder {
             self.resignFirstResponder()
@@ -324,14 +324,14 @@ extension SwiftyStarRatingView {
         }
     }
 
-    override func cancelTracking(with event: UIEvent?) {
+    override public func cancelTracking(with event: UIEvent?) {
         super.cancelTracking(with: event)
         if shouldBecomeFirstResponder && self.isFirstResponder {
             self.resignFirstResponder()
         }
     }
     
-    override func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+    override public func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
         if (gestureRecognizer.view?.isEqual(self))! {
             return !self.isUserInteractionEnabled
         }else {
@@ -362,16 +362,16 @@ extension SwiftyStarRatingView {
 
 extension SwiftyStarRatingView {
     
-    override func accessibilityActivate() -> Bool {
+    override public func accessibilityActivate() -> Bool {
         return true
     }
     
-    override func accessibilityIncrement() {
+    override public func accessibilityIncrement() {
         let aValue = _value + (allowsHalfStars ? 0.5 : 1.0)
         self.value = aValue
     }
     
-    override func accessibilityDecrement() {
+    override public func accessibilityDecrement() {
         let aValue = _value - (allowsHalfStars ? 0.5 : 1.0)
         self.value = aValue
     }
