@@ -356,7 +356,12 @@ extension SwiftyStarRatingView {
         }else {
             aValue = ceil(aValue)
         }
-        self.value = aValue
+        if aValue < minimumValue {
+            self.value = minimumValue
+        }
+        else {
+            self.value = aValue
+        }
     }
 }
 
