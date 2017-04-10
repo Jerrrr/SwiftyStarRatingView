@@ -1,10 +1,10 @@
 <img src="Image/logo.png" width="100%">
 
-####A simple star rating view written in pure swift, lightweight but powerful.
+#### A simple star rating view written in pure swift, lightweight but powerful.
 
-######[🇨🇳中文介绍](http://www.jianshu.com/p/28d5f0bac8fd)
+###### [🇨🇳中文介绍](http://www.jianshu.com/p/28d5f0bac8fd)
 
-##Screenshots
+## Screenshots
 
 <img src="Image/1.gif" width="30%">
 <img src="Image/2.gif" width="30%">
@@ -16,7 +16,7 @@
 - Xcode 8
 - Swift 3.0
 
-##CocoaPods
+## CocoaPods
 
 CocoaPods is the recommended way to add SwiftyStarRatingView to your project.
 
@@ -39,7 +39,7 @@ Second, install SwiftyStarRatingView into your project:
 
 ## Usage
 
-####Create a simple rating view：
+#### Create a simple rating view：
 
 ```
 	let starRatingView = SwiftyStarRatingView()
@@ -57,26 +57,26 @@ Second, install SwiftyStarRatingView into your project:
 	self.view.addSubview(starRatingView)
 ```
 
-####Setting this property to control whether to display a half stars:
+#### Setting this property to control whether to display a half stars:
 
 ```
 	starRatingView.allowsHalfStars = true 	//default is true
     starRatingView.value = 3.5				//default is 0
 ```
 
-####Whether accurate display:
+#### Whether accurate display:
 
 ```
 	starRatingView.accurateHalfStars = true //default is true
 ```
 
-####Always callback or just stop touch:
+#### Always callback or just stop touch:
 
 ```
 	starRatingView.continuous = true        //default is true
 ```
 
-####Use custom image:
+#### Use custom image:
 
 ```
 	starRatingView.halfStarImage = UIImage(named: "half.png")
@@ -84,7 +84,7 @@ Second, install SwiftyStarRatingView into your project:
     starRatingView.filledStarImage = UIImage(named: "filled.png")
 ```
 
-####StoryBoard or XIB:
+#### StoryBoard or XIB:
 
 `SwiftyStarRatingView` also works great with Auto Layout, you can use it in StoryBoard or XIB.
 
@@ -92,9 +92,9 @@ Second, install SwiftyStarRatingView into your project:
 
 ## Contacts	
 
-####If you wish to contact me, email at: chen.developer@foxmail.com
+#### If you wish to contact me, email at: chen.developer@foxmail.com
 
-#####Sina : [@后知后觉乀](http://weibo.com/2538296781)
+##### Sina : [@后知后觉乀](http://weibo.com/2538296781)
 
 ## License	
 
