@@ -35,7 +35,7 @@ Second, install SwiftyStarRatingView into your project:
 
 If you prefer to install SwiftyStarRatingView via Carthage include the following line in your Cartfile:
 ```
-	github "andriygo/SwiftyStarRatingView"
+	github "jerrrr/SwiftyStarRatingView"
 ```
 
 ## Manually
