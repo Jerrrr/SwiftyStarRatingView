@@ -68,7 +68,7 @@ If you prefer to install SwiftyStarRatingView via Carthage include the following
 
 ```
 	starRatingView.allowsHalfStars = true 	//default is true
-    starRatingView.value = 3.5				//default is 0
+    	starRatingView.value = 3.5		//default is 0
 ```
 
 #### Whether accurate display:
@@ -88,7 +88,7 @@ If you prefer to install SwiftyStarRatingView via Carthage include the following
 ```
 	starRatingView.halfStarImage = UIImage(named: "half.png")
 	starRatingView.emptyStarImage = UIImage(named: "empty.png")
-    starRatingView.filledStarImage = UIImage(named: "filled.png")
+    	starRatingView.filledStarImage = UIImage(named: "filled.png")
 ```
 
 #### StoryBoard or XIB:
