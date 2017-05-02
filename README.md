@@ -31,6 +31,13 @@ Second, install SwiftyStarRatingView into your project:
 	pod install
 ```
 
+## Carthage
+
+If you prefer to install SwiftyStarRatingView via Carthage include the following line in your Cartfile:
+```
+	github "jerrrr/SwiftyStarRatingView"
+```
+
 ## Manually
 
 1. Download the latest code version .
