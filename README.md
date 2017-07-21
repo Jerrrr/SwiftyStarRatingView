@@ -99,7 +99,7 @@ If you prefer to install SwiftyStarRatingView via Carthage include the following
 
 ## Contacts	
 
-#### If you wish to contact me, email at: chen.developer@foxmail.com
+#### If you wish to contact me, email at: hello@jerrrr.com
 
 ##### Sina : [@后知后觉乀](http://weibo.com/2538296781)
 
