@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "SwiftyStarRatingView"
-  s.version      = "1.0.4"
+  s.version      = "1.1.0"
   s.summary      = "A simple star rating view written with swift."
   s.homepage     = "https://github.com/Jerrrr/SwiftyStarRatingView"
   s.license      = "GNU GENERAL PUBLIC (LICENSE)"
