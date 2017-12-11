@@ -8,8 +8,8 @@
 
 import UIKit
 
-public typealias SSRVControlPointGenerator = (CGFloat, CGFloat) -> CGPoint
 public typealias SSRVGestureHandler = (_ gesture: UIGestureRecognizer) -> Bool
+private typealias SSRVControlPointGenerator = (CGFloat, CGFloat) -> CGPoint
 
 @IBDesignable
 public class SwiftyStarRatingView: UIControl {
