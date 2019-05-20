@@ -167,7 +167,7 @@ fileprivate extension SwiftyStarRatingView {
     }
 
     func drawHalfStar(frame: CGRect, tintColor: UIColor) {
-        if self.shouldUseImages {
+        if self.shouldUseImages && (self.halfStarImage != nil) {
             drawHalfStarImage(frame: frame, tintColor: tintColor)
         } else {
             drawHalfStarShape(frame: frame, tintColor: tintColor)
@@ -175,7 +175,7 @@ fileprivate extension SwiftyStarRatingView {
     }
 
     func drawAccurateStar(frame: CGRect, tintColor: UIColor, progress: CGFloat) {
-        if self.shouldUseImages {
+        if self.shouldUseImages && (self.halfStarImage != nil) {
             drawAccurateHalfStarImage(frame: frame, tintColor: tintColor, progress: progress)
         } else {
             drawAccurateHalfStarShape(frame: frame, tintColor: tintColor, progress: progress)
@@ -199,16 +199,18 @@ fileprivate extension SwiftyStarRatingView {
     }
 
     func drawAccurateHalfStarImage(frame: CGRect, tintColor: UIColor, progress: CGFloat) {
-        var image = self.halfStarImage
-        var aFrame = frame
-        if image == nil {
-            let imageF = CGRect(x: 0, y: 0, width: (image?.size.width)!*(image?.scale)!*progress, height: (image?.size.height)!*(image?.scale)!)
-            aFrame.size.width *= progress
-            let imageRef = (image?.cgImage)!.cropping(to: imageF)
-            let halfImage = UIImage(cgImage: imageRef!, scale: (image?.scale)!, orientation: (image?.imageOrientation)!)
-            image = halfImage.withRenderingMode((image?.renderingMode)!)
+        guard let halfStarImage = self.halfStarImage else {
+            drawAccurateHalfStarShape(frame: frame, tintColor: tintColor, progress: progress)
+            return
         }
-        self.draw(image: image!, frame: aFrame, tintColor: tintColor)
+        var aFrame = frame
+        let imageF = CGRect(x: 0, y: 0, width: halfStarImage.size.width * halfStarImage.scale * progress, height: halfStarImage.size.height * halfStarImage.scale)
+        aFrame.size.width *= progress
+        let imageRef = halfStarImage.cgImage?.cropping(to: imageF)
+        let croppedImage = UIImage(cgImage: imageRef!, scale: halfStarImage.scale, orientation: halfStarImage.imageOrientation)
+        let image = croppedImage.withRenderingMode(halfStarImage.renderingMode)
+
+        self.draw(image: image, frame: aFrame, tintColor: tintColor)
     }
 
     func draw(image: UIImage, frame: CGRect, tintColor: UIColor) {
