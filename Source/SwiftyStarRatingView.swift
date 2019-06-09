@@ -9,6 +9,7 @@
 import UIKit
 
 public typealias SSRVGestureHandler = (_ gesture: UIGestureRecognizer) -> Bool
+private typealias SSRVControlPointGenerator = (CGFloat, CGFloat) -> CGPoint
 
 @IBDesignable
 public class SwiftyStarRatingView: UIControl {
@@ -233,18 +234,28 @@ fileprivate extension SwiftyStarRatingView {
 
     func drawAccurateHalfStarShape(frame: CGRect, tintColor: UIColor, progress: CGFloat) {
 
+        let cp: SSRVControlPointGenerator = { w, h in
+            return CGPoint(x: frame.minX + w * frame.width, y: frame.minY + h * frame.height)
+        }
+        
         let starShapePath = UIBezierPath()
-        starShapePath.move(to: CGPoint(x: frame.minX + 0.62723 * frame.width, y: frame.minY + 0.37309 * frame.height))
-        starShapePath.addLine(to: CGPoint(x: frame.minX + 0.50000 * frame.width, y: frame.minY + 0.02500 * frame.height))
-        starShapePath.addLine(to: CGPoint(x: frame.minX + 0.37292 * frame.width, y: frame.minY + 0.37309 * frame.height))
-        starShapePath.addLine(to: CGPoint(x: frame.minX + 0.02500 * frame.width, y: frame.minY + 0.39112 * frame.height))
-        starShapePath.addLine(to: CGPoint(x: frame.minX + 0.30504 * frame.width, y: frame.minY + 0.62908 * frame.height))
-        starShapePath.addLine(to: CGPoint(x: frame.minX + 0.20642 * frame.width, y: frame.minY + 0.97500 * frame.height))
-        starShapePath.addLine(to: CGPoint(x: frame.minX + 0.50000 * frame.width, y: frame.minY + 0.78265 * frame.height))
-        starShapePath.addLine(to: CGPoint(x: frame.minX + 0.79358 * frame.width, y: frame.minY + 0.97500 * frame.height))
-        starShapePath.addLine(to: CGPoint(x: frame.minX + 0.69501 * frame.width, y: frame.minY + 0.62908 * frame.height))
-        starShapePath.addLine(to: CGPoint(x: frame.minX + 0.97500 * frame.width, y: frame.minY + 0.39112 * frame.height))
-        starShapePath.addLine(to: CGPoint(x: frame.minX + 0.62723 * frame.width, y: frame.minY + 0.37309 * frame.height))
+        starShapePath.move(to: cp(0.62723, 0.37309))
+        
+        [
+            (0.50000, 0.02500),
+            (0.37272, 0.37309),
+            (0.02500, 0.39112),
+            (0.30504, 0.62908),
+            (0.20642, 0.97500),
+            (0.50000, 0.78265),
+            (0.79358, 0.97500),
+            (0.69501, 0.62908),
+            (0.97500, 0.39112),
+            (0.62723, 0.37309),
+        ].forEach { p in
+            starShapePath.addLine(to: cp(p.0, p.1))
+        }
+
         starShapePath.close()
         starShapePath.miterLimit = 4
 

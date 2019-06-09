@@ -71,10 +71,10 @@ class ViewController: UIViewController {
     }
     
     func getRandomColor() -> UIColor {
-        let red = CGFloat(arc4random_uniform(255))/CGFloat(255.0)
-        let green = CGFloat( arc4random_uniform(255))/CGFloat(255.0)
-        let blue = CGFloat(arc4random_uniform(255))/CGFloat(255.0)
-        return UIColor.init(red:red, green:green, blue:blue , alpha: 1)
+        let r = CGFloat(arc4random_uniform(255))/CGFloat(255.0)
+        let g = CGFloat(arc4random_uniform(255))/CGFloat(255.0)
+        let b = CGFloat(arc4random_uniform(255))/CGFloat(255.0)
+        return UIColor(red:r, green:g, blue:b , alpha: 1)
     }
     
     func setImageForStarRatingView(value:Bool) {
@@ -82,7 +82,7 @@ class ViewController: UIViewController {
             starRatingView.emptyStarImage = UIImage(named: "1.png")
             starRatingView.halfStarImage = UIImage(named: "2.png")
             starRatingView.filledStarImage = UIImage(named: "3.png")
-        }else {
+        } else {
             starRatingView.emptyStarImage = nil
             starRatingView.halfStarImage = nil
             starRatingView.filledStarImage = nil

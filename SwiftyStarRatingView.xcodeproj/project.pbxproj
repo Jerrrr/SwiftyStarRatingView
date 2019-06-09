@@ -106,7 +106,7 @@
 				TargetAttributes = {
 					42545FB41EB75F1A008EB710 = {
 						CreatedOnToolsVersion = 8.3.2;
-						DevelopmentTeam = 5S4NF9A955;
+						DevelopmentTeam = 3PN46DXD87;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -116,6 +116,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 			);
 			mainGroup = 42545FAB1EB75F1A008EB710;
@@ -256,7 +257,7 @@
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "";
 				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = 5S4NF9A955;
+				DEVELOPMENT_TEAM = "";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -267,7 +268,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.SwiftyStarRatingView;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 3.0;
+				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
@@ -276,7 +277,7 @@
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "";
 				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = 5S4NF9A955;
+				DEVELOPMENT_TEAM = "";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -287,7 +288,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.SwiftyStarRatingView;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 3.0;
+				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
 		};
