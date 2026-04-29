@@ -12,9 +12,23 @@
 
 ## Requirements
 
-- iOS 8.0+ 
-- Xcode 9
-- Swift 4.0
+- iOS 12.0+
+- Xcode 15+
+- Swift 5.0+
+
+## Swift Package Manager
+
+Add SwiftyStarRatingView as a package dependency:
+
+```
+https://github.com/Jerrrr/SwiftyStarRatingView.git
+```
+
+Then import the module:
+
+```swift
+import SwiftyStarRatingView
+```
 
 ## CocoaPods
 

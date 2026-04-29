@@ -12,227 +12,257 @@ public typealias SSRVGestureHandler = (_ gesture: UIGestureRecognizer) -> Bool
 
 @IBDesignable
 public class SwiftyStarRatingView: UIControl {
-    
+
     public var shouldBecomeFirstResponder: Bool = false
-    public var shouldBeginGestureHandler: SSRVGestureHandler!
-    
-    fileprivate var _minimumValue: CGFloat = 0
-    fileprivate var _maximumValue: CGFloat = 5
-    fileprivate var _value: CGFloat = 0 {
+    public var shouldBeginGestureHandler: SSRVGestureHandler?
+
+    private var ratingRange: ClosedRange<CGFloat> {
+        return minimumValue...maximumValue
+    }
+
+    private var starCount: Int {
+        return max(Int(ceil(maximumValue)), 1)
+    }
+
+    private var isRightToLeft: Bool {
+        return UIView.userInterfaceLayoutDirection(for: semanticContentAttribute) == .rightToLeft
+    }
+
+    @IBInspectable public var minimumValue: CGFloat = 0 {
         didSet {
-            if _value != oldValue && _value >= _minimumValue && _value <= _maximumValue && continuous == true {
-                self.sendActions(for: .valueChanged)
+            minimumValue = max(minimumValue, 0)
+            if maximumValue < minimumValue {
+                maximumValue = minimumValue
             }
+            value = clampedValue(value)
+            setNeedsDisplay()
+            invalidateIntrinsicContentSize()
+        }
+    }
+
+    @IBInspectable public var maximumValue: CGFloat = 5 {
+        didSet {
+            maximumValue = max(maximumValue, minimumValue)
+            value = clampedValue(value)
+            setNeedsDisplay()
+            invalidateIntrinsicContentSize()
+        }
+    }
+
+    @IBInspectable public var value: CGFloat = 0 {
+        didSet {
+            let clamped = clampedValue(value)
+            if value != clamped {
+                value = clamped
+                return
+            }
+
+            if value != oldValue && continuous {
+                sendActions(for: .valueChanged)
+            }
+
+            accessibilityValue = formattedAccessibilityValue
             setNeedsDisplay()
         }
     }
-    
-    @IBInspectable public var minimumValue: CGFloat {
-        set {
-            if _minimumValue != newValue {
-                _minimumValue = newValue
-            }
-        }
-        get {
-            return max(_minimumValue, 0)
-        }
-    }
-    
-    @IBInspectable public var maximumValue: CGFloat {
-        set {
-            if _maximumValue != newValue {
-                _maximumValue = newValue
-            }
-        }
-        get {
-            return max(_maximumValue, _minimumValue)
+
+    @IBInspectable public var spacing: CGFloat = 5 {
+        didSet {
+            spacing = max(spacing, 0)
+            setNeedsDisplay()
+            invalidateIntrinsicContentSize()
         }
     }
 
-    @IBInspectable public var value: CGFloat {
-        set {
-            if _value != newValue {
-                _value = newValue
-            }
-        }
-        get {
-            return min(max(_value, _minimumValue), _maximumValue)
-        }
-    }
-
-    public func observe<Value>(_ keyPath: KeyPath<SwiftyStarRatingView, Value>, options: NSKeyValueObservingOptions, changeHandler: @escaping (SwiftyStarRatingView, NSKeyValueObservedChange<Value>) -> Void) -> NSKeyValueObservation {
-        
-        if [\SwiftyStarRatingView.allowsHalfStars,
-            \SwiftyStarRatingView.accurateHalfStars,
-            \SwiftyStarRatingView.emptyStarImage,
-            \SwiftyStarRatingView.halfStarImage,
-            \SwiftyStarRatingView.filledStarImage,
-            \SwiftyStarRatingView.maximumValue,
-            \SwiftyStarRatingView.minimumValue,
-            \SwiftyStarRatingView.spacing,].contains(keyPath) {
-            return observe(keyPath, changeHandler: { (_, _) in
-                self.setNeedsDisplay()
-            })
-        }
-
-        return observe(keyPath, changeHandler: { (_, _) in })
-    }
-    
-    @IBInspectable public var spacing: CGFloat = 5
     @IBInspectable public var continuous: Bool = true
-    @IBInspectable public var allowsHalfStars: Bool = true
-    @IBInspectable public var accurateHalfStars: Bool = true
-    
-    @IBInspectable public var emptyStarImage: UIImage?
-    @IBInspectable public var halfStarImage: UIImage?
-    @IBInspectable public var filledStarImage: UIImage?
 
-    fileprivate var shouldUseImages: Bool {
-        get {
-            return (self.emptyStarImage != nil && self.filledStarImage != nil)
-        }
+    @IBInspectable public var allowsHalfStars: Bool = true {
+        didSet { setNeedsDisplay() }
+    }
+
+    @IBInspectable public var accurateHalfStars: Bool = true {
+        didSet { setNeedsDisplay() }
+    }
+
+    @IBInspectable public var emptyStarImage: UIImage? {
+        didSet { setNeedsDisplay() }
+    }
+
+    @IBInspectable public var halfStarImage: UIImage? {
+        didSet { setNeedsDisplay() }
+    }
+
+    @IBInspectable public var filledStarImage: UIImage? {
+        didSet { setNeedsDisplay() }
+    }
+
+    private var shouldUseImages: Bool {
+        return emptyStarImage != nil && filledStarImage != nil
     }
 
     override public var isEnabled: Bool {
-        willSet {
-            updateAppearance(enabled: newValue)
+        didSet {
+            updateAppearance(enabled: isEnabled)
         }
     }
 
     override public var canBecomeFirstResponder: Bool {
-        get {
-            return shouldBecomeFirstResponder
-        }
-    }
-    
-    override public var intrinsicContentSize: CGSize {
-        get {
-            let height: CGFloat = 44.0
-            return CGSize(width: _maximumValue * height + (_maximumValue-1) * spacing, height: height)
-        }
+        return shouldBecomeFirstResponder
     }
 
-    override init(frame: CGRect) {
+    override public var intrinsicContentSize: CGSize {
+        let height: CGFloat = 44.0
+        let width = CGFloat(starCount) * height + CGFloat(starCount - 1) * spacing
+        return CGSize(width: width, height: height)
+    }
+
+    override public init(frame: CGRect) {
         super.init(frame: frame)
-        self.customInit()
+        customInit()
     }
 
     required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        self.customInit()
+        customInit()
+    }
+
+    override public func tintColorDidChange() {
+        super.tintColorDidChange()
+        setNeedsDisplay()
     }
 
     override public func draw(_ rect: CGRect) {
+        guard maximumValue > 0, rect.width > 0, rect.height > 0 else {
+            return
+        }
 
-        let context = UIGraphicsGetCurrentContext()
-        context?.setFillColor((self.backgroundColor?.cgColor ?? UIColor.white.cgColor)!)
-        context?.fill(rect)
+        backgroundColor?.setFill()
+        UIRectFill(rect)
 
-        let availableWidth = rect.width - 2 - (spacing * (_maximumValue - 1))
-        let cellWidth = availableWidth / _maximumValue
+        let availableWidth = max(rect.width - 2 - (spacing * CGFloat(starCount - 1)), 0)
+        let cellWidth = availableWidth / CGFloat(starCount)
         let starSide = min(cellWidth, rect.height)
 
-        for idx in 0..<Int(_maximumValue) {
-
-            let center = CGPoint(x: (cellWidth + spacing) * CGFloat(idx) + cellWidth / 2 + 1, y: rect.size.height / 2)
-            let frame = CGRect(x: center.x - starSide / 2, y: center.y - starSide / 2, width: starSide, height: starSide)
-            let highlighted = Float(idx+1) <= ceilf(Float(_value))
-
-            if allowsHalfStars && highlighted && (CGFloat(idx+1) > _value) {
-                if accurateHalfStars {
-                    drawAccurateStar(frame: frame, tintColor: tintColor, progress: _value-CGFloat(idx))
-                } else {
-                    drawHalfStar(frame: frame, tintColor: tintColor)
-                }
-            } else {
-                drawStar(frame: frame, tintColor: tintColor, highlighted: highlighted)
-            }
+        for visualIndex in 0..<starCount {
+            let ratingIndex = isRightToLeft ? starCount - visualIndex - 1 : visualIndex
+            let center = CGPoint(
+                x: (cellWidth + spacing) * CGFloat(visualIndex) + cellWidth / 2 + 1,
+                y: rect.height / 2
+            )
+            let frame = CGRect(
+                x: center.x - starSide / 2,
+                y: center.y - starSide / 2,
+                width: starSide,
+                height: starSide
+            )
+            let progress = starProgress(at: ratingIndex)
+            drawStar(frame: frame, progress: progress, rightToLeft: isRightToLeft)
         }
     }
 }
 
-fileprivate extension SwiftyStarRatingView {
+private extension SwiftyStarRatingView {
 
     func customInit() {
-        self.isExclusiveTouch = true
-        self.updateAppearance(enabled: self.isEnabled)
+        isExclusiveTouch = true
+        isAccessibilityElement = true
+        accessibilityTraits.insert(.adjustable)
+        accessibilityValue = formattedAccessibilityValue
+        updateAppearance(enabled: isEnabled)
     }
 
-    func drawStar(frame: CGRect, tintColor: UIColor, highlighted: Bool) {
-        if self.shouldUseImages {
-            drawStartImage(frame: frame, tintColor: tintColor, highlighted: highlighted)
-        } else {
-            drawStarShape(frame: frame, tintColor: tintColor, highlighted: highlighted)
+    func clampedValue(_ value: CGFloat) -> CGFloat {
+        return min(max(value, minimumValue), maximumValue)
+    }
+
+    func starProgress(at index: Int) -> CGFloat {
+        let lowerBound = CGFloat(index)
+        let upperBound = CGFloat(index + 1)
+
+        if value >= upperBound {
+            return 1
         }
-    }
 
-    func drawHalfStar(frame: CGRect, tintColor: UIColor) {
-        if self.shouldUseImages && (self.halfStarImage != nil) {
-            drawHalfStarImage(frame: frame, tintColor: tintColor)
-        } else {
-            drawHalfStarShape(frame: frame, tintColor: tintColor)
+        if value <= lowerBound {
+            return 0
         }
+
+        return value - lowerBound
     }
 
-    func drawAccurateStar(frame: CGRect, tintColor: UIColor, progress: CGFloat) {
-        if self.shouldUseImages && (self.halfStarImage != nil) {
-            drawAccurateHalfStarImage(frame: frame, tintColor: tintColor, progress: progress)
+    func drawStar(frame: CGRect, progress: CGFloat, rightToLeft: Bool) {
+        if shouldUseImages {
+            drawStarImage(frame: frame, progress: progress, rightToLeft: rightToLeft)
         } else {
-            drawAccurateHalfStarShape(frame: frame, tintColor: tintColor, progress: progress)
+            drawStarShape(frame: frame, progress: progress, rightToLeft: rightToLeft)
         }
     }
 
     func updateAppearance(enabled: Bool) {
-        self.alpha = enabled ? 1.0 : 0.5
+        alpha = enabled ? 1.0 : 0.5
     }
 }
 
-fileprivate extension SwiftyStarRatingView {
-    //Image Drawing
-    func drawStartImage(frame: CGRect, tintColor: UIColor, highlighted: Bool) {
-        let image = highlighted ? self.filledStarImage : self.emptyStarImage
-        draw(image: image!, frame: frame, tintColor: tintColor)
-    }
+private extension SwiftyStarRatingView {
 
-    func drawHalfStarImage(frame: CGRect, tintColor: UIColor) {
-        drawAccurateHalfStarImage(frame: frame, tintColor: tintColor, progress: 0.5)
-    }
+    func drawStarImage(frame: CGRect, progress: CGFloat, rightToLeft: Bool) {
+        if let emptyStarImage = emptyStarImage {
+            draw(image: emptyStarImage, frame: frame)
+        }
 
-    func drawAccurateHalfStarImage(frame: CGRect, tintColor: UIColor, progress: CGFloat) {
-        guard let halfStarImage = self.halfStarImage else {
-            drawAccurateHalfStarShape(frame: frame, tintColor: tintColor, progress: progress)
+        guard progress > 0 else {
             return
         }
-        var aFrame = frame
-        let imageF = CGRect(x: 0, y: 0, width: halfStarImage.size.width * halfStarImage.scale * progress, height: halfStarImage.size.height * halfStarImage.scale)
-        aFrame.size.width *= progress
-        let imageRef = halfStarImage.cgImage?.cropping(to: imageF)
-        let croppedImage = UIImage(cgImage: imageRef!, scale: halfStarImage.scale, orientation: halfStarImage.imageOrientation)
-        let image = croppedImage.withRenderingMode(halfStarImage.renderingMode)
 
-        self.draw(image: image, frame: aFrame, tintColor: tintColor)
+        if !accurateHalfStars && progress < 1, let halfStarImage = halfStarImage {
+            draw(image: halfStarImage, frame: frame)
+            return
+        }
+
+        guard let filledStarImage = filledStarImage else {
+            drawStarShape(frame: frame, progress: progress, rightToLeft: rightToLeft)
+            return
+        }
+
+        drawCropped(image: filledStarImage, frame: frame, progress: progress, rightToLeft: rightToLeft)
     }
 
-    func draw(image: UIImage, frame: CGRect, tintColor: UIColor) {
-        if image.renderingMode == .alwaysTemplate {
-            tintColor.setFill()
+    func drawCropped(image: UIImage, frame: CGRect, progress: CGFloat, rightToLeft: Bool) {
+        guard let cgImage = image.cgImage else {
+            draw(image: image, frame: frame)
+            return
         }
+
+        let clampedProgress = min(max(progress, 0), 1)
+        let pixelWidth = CGFloat(cgImage.width)
+        let pixelHeight = CGFloat(cgImage.height)
+        let cropWidth = max(pixelWidth * clampedProgress, 1)
+        let cropX = rightToLeft ? pixelWidth - cropWidth : 0
+        let cropRect = CGRect(x: cropX, y: 0, width: cropWidth, height: pixelHeight).integral
+
+        guard let imageRef = cgImage.cropping(to: cropRect) else {
+            draw(image: image, frame: frame)
+            return
+        }
+
+        let croppedImage = UIImage(cgImage: imageRef, scale: image.scale, orientation: image.imageOrientation)
+        var drawFrame = frame
+        drawFrame.size.width *= clampedProgress
+        if rightToLeft {
+            drawFrame.origin.x = frame.maxX - drawFrame.width
+        }
+
+        draw(image: croppedImage.withRenderingMode(image.renderingMode), frame: drawFrame)
+    }
+
+    func draw(image: UIImage, frame: CGRect) {
         image.draw(in: frame)
     }
 }
 
-fileprivate extension SwiftyStarRatingView {
-    //Shape Drawing
-    func drawStarShape(frame: CGRect, tintColor: UIColor, highlighted: Bool) {
-        drawAccurateHalfStarShape(frame: frame, tintColor: tintColor, progress: highlighted ? 1.0 : 0.0)
-    }
+private extension SwiftyStarRatingView {
 
-    func drawHalfStarShape(frame: CGRect, tintColor: UIColor) {
-        drawAccurateHalfStarShape(frame: frame, tintColor: tintColor, progress: 0.5)
-    }
-
-    func drawAccurateHalfStarShape(frame: CGRect, tintColor: UIColor, progress: CGFloat) {
-
+    func drawStarShape(frame: CGRect, progress: CGFloat, rightToLeft: Bool) {
         let starShapePath = UIBezierPath()
         starShapePath.move(to: CGPoint(x: frame.minX + 0.62723 * frame.width, y: frame.minY + 0.37309 * frame.height))
         starShapePath.addLine(to: CGPoint(x: frame.minX + 0.50000 * frame.width, y: frame.minY + 0.02500 * frame.height))
@@ -248,18 +278,19 @@ fileprivate extension SwiftyStarRatingView {
         starShapePath.close()
         starShapePath.miterLimit = 4
 
-        let frameWidth = frame.size.width
-        let rightRectOfStar = CGRect(x: frame.origin.x + progress * frameWidth, y: frame.origin.y, width: frameWidth - progress * frameWidth, height: frame.size.height)
+        let clampedProgress = min(max(progress, 0), 1)
+        let fillWidth = frame.width * clampedProgress
+        let fillRect = rightToLeft
+            ? CGRect(x: frame.maxX - fillWidth, y: frame.minY, width: fillWidth, height: frame.height)
+            : CGRect(x: frame.minX, y: frame.minY, width: fillWidth, height: frame.height)
 
-        let clipPath = UIBezierPath(rect: CGRect.infinite)
-        clipPath.append(UIBezierPath(rect: rightRectOfStar))
-        clipPath.usesEvenOddFillRule = true
-
-        UIGraphicsGetCurrentContext()!.saveGState()
-        clipPath.addClip()
-        tintColor.setFill()
-        starShapePath.fill()
-        UIGraphicsGetCurrentContext()!.restoreGState()
+        if clampedProgress > 0, let context = UIGraphicsGetCurrentContext() {
+            context.saveGState()
+            UIBezierPath(rect: fillRect).addClip()
+            tintColor.setFill()
+            starShapePath.fill()
+            context.restoreGState()
+        }
 
         tintColor.setStroke()
         starShapePath.lineWidth = 1
@@ -270,77 +301,102 @@ fileprivate extension SwiftyStarRatingView {
 extension SwiftyStarRatingView {
 
     override public func beginTracking(_ touch: UITouch, with event: UIEvent?) -> Bool {
-        if isEnabled {
-            super.beginTracking(touch, with: event)
-            if shouldBecomeFirstResponder && !self.isFirstResponder {
-                self.becomeFirstResponder()
-            }
-            self.handle(touch: touch)
+        guard isEnabled else {
+            return false
         }
-        return isEnabled
+
+        super.beginTracking(touch, with: event)
+        if shouldBecomeFirstResponder && !isFirstResponder {
+            becomeFirstResponder()
+        }
+        handle(touch: touch)
+        return true
     }
 
     override public func continueTracking(_ touch: UITouch, with event: UIEvent?) -> Bool {
-        if isEnabled {
-            super.continueTracking(touch, with: event)
-            self.handle(touch: touch)
+        guard isEnabled else {
+            return false
         }
-        return isEnabled
+
+        super.continueTracking(touch, with: event)
+        handle(touch: touch)
+        return true
     }
 
     override public func endTracking(_ touch: UITouch?, with event: UIEvent?) {
         super.endTracking(touch, with: event)
-        if shouldBecomeFirstResponder && self.isFirstResponder {
-            self.resignFirstResponder()
+        if shouldBecomeFirstResponder && isFirstResponder {
+            resignFirstResponder()
         }
-        self.handle(touch: touch!)
+
+        if let touch = touch {
+            handle(touch: touch)
+        }
+
         if !continuous {
-            self.sendActions(for: .valueChanged)
+            sendActions(for: .valueChanged)
         }
     }
 
     override public func cancelTracking(with event: UIEvent?) {
         super.cancelTracking(with: event)
-        if shouldBecomeFirstResponder && self.isFirstResponder {
-            self.resignFirstResponder()
+        if shouldBecomeFirstResponder && isFirstResponder {
+            resignFirstResponder()
         }
     }
 
     override public func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
-        if let gestureView = gestureRecognizer.view, gestureView.isEqual(self) {
-            return !self.isUserInteractionEnabled
-        } else {
-            return self.shouldBeginGestureHandler(gestureRecognizer)
+        if gestureRecognizer.view === self {
+            return !isUserInteractionEnabled
         }
+
+        return shouldBeginGestureHandler?(gestureRecognizer) ?? false
     }
 
-    fileprivate func handle(touch: UITouch) {
-        let cellWidth = self.bounds.width / _maximumValue
-        let location = touch.location(in: self)
-        
-        var aValue = location.x / cellWidth
-        if !allowsHalfStars {
-            aValue = ceil(aValue)
-        } else if !accurateHalfStars {
-            aValue = ceil(2*aValue + 1) / 2.0
+    private func handle(touch: UITouch) {
+        guard bounds.width > 0, maximumValue > 0 else {
+            return
         }
-        self.value = aValue
+
+        let location = touch.location(in: self)
+        let position = min(max(location.x / bounds.width, 0), 1)
+        let adjustedPosition = isRightToLeft ? 1 - position : position
+        var newValue = adjustedPosition * maximumValue
+
+        if !allowsHalfStars {
+            newValue = ceil(newValue)
+        } else if !accurateHalfStars {
+            newValue = ceil(2 * newValue) / 2.0
+        }
+
+        value = clampedValue(newValue)
     }
 }
 
 extension SwiftyStarRatingView {
 
     override public func accessibilityActivate() -> Bool {
+        sendActions(for: .valueChanged)
         return true
     }
 
     override public func accessibilityIncrement() {
-        let increment = allowsHalfStars ? 0.5 : 1.0
-        self.value += CGFloat(increment)
+        let increment: CGFloat = allowsHalfStars ? 0.5 : 1.0
+        value = clampedValue(value + increment)
     }
 
     override public func accessibilityDecrement() {
-        let decrement = allowsHalfStars ? 0.5 : 1.0
-        self.value -= CGFloat(decrement)
+        let decrement: CGFloat = allowsHalfStars ? 0.5 : 1.0
+        value = clampedValue(value - decrement)
+    }
+
+    private var formattedAccessibilityValue: String {
+        let formatter = NumberFormatter()
+        formatter.maximumFractionDigits = 2
+        formatter.minimumFractionDigits = 0
+
+        let currentValue = formatter.string(from: NSNumber(value: Double(value))) ?? "\(value)"
+        let maxValue = formatter.string(from: NSNumber(value: Double(maximumValue))) ?? "\(maximumValue)"
+        return "\(currentValue) of \(maxValue)"
     }
 }
